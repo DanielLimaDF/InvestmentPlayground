@@ -1,2 +1,2 @@
 # InvestmentPlayground
-Investment Calculation Playground
+Investment Calculator Playground
