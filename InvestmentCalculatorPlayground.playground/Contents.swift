@@ -3,12 +3,17 @@ import UIKit
 var initialValue: Decimal
 var monthlyInvestment: Decimal
 var dividendYeld: Decimal
+var annualBoost: Decimal
+var boostMonth: Int
 var objective: Decimal
+var depositedAmount: Decimal
 
 // Parameters
 initialValue = 10000
 monthlyInvestment = 2000
 dividendYeld = 12.27
+annualBoost = 0
+boostMonth = 3
 objective = 1000000
 // End of Parameters
 
@@ -17,6 +22,8 @@ var yearCount = 0
 
 let formatter = DateFormatter()
 formatter.dateFormat = "MMMM"
+
+depositedAmount = initialValue
 
 extension Decimal {
     func toMoney(localeIdentifier: String = "pt_BR") -> String {
@@ -94,6 +101,14 @@ func calculateYearlyIncone() {
     
     for monthNumber in currentMonthNumber...12 {
         
+        var boostMarker = String()
+    
+        if yearCount != 1 && annualBoost > 0 && monthNumber == boostMonth {
+            patrimony += annualBoost
+            depositedAmount += annualBoost
+            boostMarker = "*"
+        }
+        
         let willReceiveIncome = !(yearCount == 1 && monthNumber == currentMonthNumber)
         
         let monthlyRate = dividendYeld / 12
@@ -103,13 +118,15 @@ func calculateYearlyIncone() {
         
         print(tableRow(
             tableWidth: tableWidth,
-            values: [month, patrimony.toMoney(), monthlyInvestment.toMoney(), income.toMoney(), total.toMoney()]
+            values: [month, patrimony.toMoney().appending(boostMarker), monthlyInvestment.toMoney(), income.toMoney(), total.toMoney()]
         ))
         
         patrimony = total
+        depositedAmount += monthlyInvestment
     }
     
     print(separatorLine(tableWidth: tableWidth))
+    print("Deposited ammout: \(depositedAmount.toMoney())")
     print("\n\n")
     
     if patrimony < objective {
